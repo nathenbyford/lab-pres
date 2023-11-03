@@ -1,0 +1,1130 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<script src="research-papers_files/libs/clipboard/clipboard.min.js"></script>
+<script src="research-papers_files/libs/quarto-html/tabby.min.js"></script>
+<script src="research-papers_files/libs/quarto-html/popper.min.js"></script>
+<script src="research-papers_files/libs/quarto-html/tippy.umd.min.js"></script>
+<link href="research-papers_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="research-papers_files/libs/quarto-html/light-border.css" rel="stylesheet">
+<link href="research-papers_files/libs/quarto-html/quarto-html.min.css" rel="stylesheet" data-mode="light">
+<link href="research-papers_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+  <meta name="generator" content="quarto-1.3.450">
+
+  <meta name="author" content="Nathen Byford">
+  <title>Adaptive Thresholds and Scan Statistics</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="research-papers_files/libs/revealjs/dist/reset.css">
+  <link rel="stylesheet" href="research-papers_files/libs/revealjs/dist/reveal.css">
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+      vertical-align: middle;
+    }
+    /* CSS for citations */
+    div.csl-bib-body { }
+    div.csl-entry {
+      clear: both;
+    }
+    .hanging-indent div.csl-entry {
+      margin-left:2em;
+      text-indent:-2em;
+    }
+    div.csl-left-margin {
+      min-width:2em;
+      float:left;
+    }
+    div.csl-right-inline {
+      margin-left:2em;
+      padding-left:1em;
+    }
+    div.csl-indent {
+      margin-left: 2em;
+    }  </style>
+  <link rel="stylesheet" href="research-papers_files/libs/revealjs/dist/theme/quarto.css">
+  <link href="research-papers_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
+  <link href="research-papers_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
+  <link href="research-papers_files/libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+  <link href="research-papers_files/libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
+  <style type="text/css">
+
+  .callout {
+    margin-top: 1em;
+    margin-bottom: 1em;  
+    border-radius: .25rem;
+  }
+
+  .callout.callout-style-simple { 
+    padding: 0em 0.5em;
+    border-left: solid #acacac .3rem;
+    border-right: solid 1px silver;
+    border-top: solid 1px silver;
+    border-bottom: solid 1px silver;
+    display: flex;
+  }
+
+  .callout.callout-style-default {
+    border-left: solid #acacac .3rem;
+    border-right: solid 1px silver;
+    border-top: solid 1px silver;
+    border-bottom: solid 1px silver;
+  }
+
+  .callout .callout-body-container {
+    flex-grow: 1;
+  }
+
+  .callout.callout-style-simple .callout-body {
+    font-size: 1rem;
+    font-weight: 400;
+  }
+
+  .callout.callout-style-default .callout-body {
+    font-size: 0.9rem;
+    font-weight: 400;
+  }
+
+  .callout.callout-titled.callout-style-simple .callout-body {
+    margin-top: 0.2em;
+  }
+
+  .callout:not(.callout-titled) .callout-body {
+      display: flex;
+  }
+
+  .callout:not(.no-icon).callout-titled.callout-style-simple .callout-content {
+    padding-left: 1.6em;
+  }
+
+  .callout.callout-titled .callout-header {
+    padding-top: 0.2em;
+    margin-bottom: -0.2em;
+  }
+
+  .callout.callout-titled .callout-title  p {
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+  }
+    
+  .callout.callout-titled.callout-style-simple .callout-content  p {
+    margin-top: 0;
+  }
+
+  .callout.callout-titled.callout-style-default .callout-content  p {
+    margin-top: 0.7em;
+  }
+
+  .callout.callout-style-simple div.callout-title {
+    border-bottom: none;
+    font-size: .9rem;
+    font-weight: 600;
+    opacity: 75%;
+  }
+
+  .callout.callout-style-default  div.callout-title {
+    border-bottom: none;
+    font-weight: 600;
+    opacity: 85%;
+    font-size: 0.9rem;
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+  }
+
+  .callout.callout-style-default div.callout-content {
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+  }
+
+  .callout.callout-style-simple .callout-icon::before {
+    height: 1rem;
+    width: 1rem;
+    display: inline-block;
+    content: "";
+    background-repeat: no-repeat;
+    background-size: 1rem 1rem;
+  }
+
+  .callout.callout-style-default .callout-icon::before {
+    height: 0.9rem;
+    width: 0.9rem;
+    display: inline-block;
+    content: "";
+    background-repeat: no-repeat;
+    background-size: 0.9rem 0.9rem;
+  }
+
+  .callout-title {
+    display: flex
+  }
+    
+  .callout-icon::before {
+    margin-top: 1rem;
+    padding-right: .5rem;
+  }
+
+  .callout.no-icon::before {
+    display: none !important;
+  }
+
+  .callout.callout-titled .callout-body > .callout-content > :last-child {
+    margin-bottom: 0.5rem;
+  }
+
+  .callout.callout-titled .callout-icon::before {
+    margin-top: .5rem;
+    padding-right: .5rem;
+  }
+
+  .callout:not(.callout-titled) .callout-icon::before {
+    margin-top: 1rem;
+    padding-right: .5rem;
+  }
+
+  /* Callout Types */
+
+  div.callout-note {
+    border-left-color: #4582ec !important;
+  }
+
+  div.callout-note .callout-icon::before {
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAERlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAAAIKADAAQAAAABAAAAIAAAAACshmLzAAAEU0lEQVRYCcVXTWhcVRQ+586kSUMMxkyaElstCto2SIhitS5Ek8xUKV2poatCcVHtUlFQk8mbaaziwpWgglJwVaquitBOfhQXFlqlzSJpFSpIYyXNjBNiTCck7x2/8/LeNDOZxDuEkgOXe++553zfefee+/OYLOXFk3+1LLrRdiO81yNqZ6K9cG0P3MeFaMIQjXssE8Z1JzLO9ls20MBZX7oG8w9GxB0goaPrW5aNMp1yOZIa7Wv6o2ykpLtmAPs/vrG14Z+6d4jpbSKuhdcSyq9wGMPXjonwmESXrriLzFGOdDBLB8Y6MNYBu0dRokSygMA/mrun8MGFN3behm6VVAwg4WR3i6FvYK1T7MHo9BK7ydH+1uurECoouk5MPRyVSBrBHMYwVobG2aOXM07sWrn5qgB60rc6mcwIDJtQrnrEr44kmy+UO9r0u9O5/YbkS9juQckLed3DyW2XV/qWBBB3ptvI8EUY3I9p/67OW+g967TNr3Sotn3IuVlfMLVnsBwH4fsnebJvyGm5GeIUA3jljERmrv49SizPYuq+z7c2H/jlGC+Ghhupn/hcapqmcudB9jwJ/3jvnvu6vu5lVzF1fXyZuZZ7U8nRmVzytvT+H3kilYvH09mLWrQdwFSsFEsxFVs5fK7A0g8gMZjbif4ACpKbjv7gNGaD8bUrlk8x+KRflttr22JEMRUbTUwwDQScyzPgedQHZT0xnx7ujw2jfVfExwYHwOsDTjLdJ2ebmeQIlJ7neo41s/DrsL3kl+W2lWvAga0tR3zueGr6GL78M3ifH0rGXrBC2aAR8uYcIA5gwV8zIE8onoh8u0Fca/ciF7j1uOzEnqcIm59sEXoGc0+z6+H45V1CvAvHcD7THztu669cnp+L0okAeIc6zjbM/24LgGM1gZk7jnRu1aQWoU9sfUOuhrmtaPIO3YY1KLLWZaEO5TKUbMY5zx8W9UJ6elpLwKXbsaZ4EFl7B4bMtDv0iRipKoDQT2sNQI9b1utXFdYisi+wzZ/ri/1m7QfDgEuvgUUEIJPq3DhX/5DWNqIXDOweC2wvIR90Oq3lDpdMIgD2r0dXvGdsEW5H6x6HLRJYU7C69VefO1x8Gde1ZFSJLfWS1jbCnhtOPxmpfv2LXOA2Xk2tvnwKKPFuZ/oRmwBwqRQDcKNeVQkYcOjtWVBuM/JuYw5b6isojIkYxyYAFn5K7ZBF10fea52y8QltAg6jnMqNHFBmGkQ1j+U43HMi2xMar1Nv0zGsf1s8nUsmUtPOOrbFIR8bHFDMB5zL13Gmr/kGlCkUzedTzzmzsaJXhYawnA3UmARpiYj5ooJZiUoxFRtK3X6pgNPv+IZVPcnwbOl6f+aBaO1CNvPW9n9LmCp01nuSaTRF2YxHqZ8DYQT6WsXT+RD6eUztwYLZ8rM+rcPxamv1VQzFUkzFXvkiVrySGQgJNvXHJAxiU3/NwiC03rSf05VBaPtu/Z7/B8Yn/w7eguloAAAAAElFTkSuQmCC');
+  }
+
+  div.callout-note.callout-style-default .callout-title {
+    background-color: #dae6fb
+  }
+
+  div.callout-important {
+    border-left-color: #d9534f !important;
+  }
+
+  div.callout-important .callout-icon::before {
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAERlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAAAIKADAAQAAAABAAAAIAAAAACshmLzAAAEKklEQVRYCcVXTWhcVRS+575MJym48A+hSRFr00ySRQhURRfd2HYjk2SSTokuBCkU2o0LoSKKraKIBTcuFCoidGFD08nkBzdREbpQ1EDNIv8qSGMFUboImMSZd4/f9zJv8ibJMC8xJQfO3HPPPef7zrvvvnvviIkpC9nsw0UttFunbUhpFzFtarSd6WJkStVMw5xyVqYTvkwfzuf/5FgtkVoB0729j1rjXwThS7Vio+Mo6DNnvLfahoZ+i/o32lULuJ3NNiz7q6+pyAUkJaFF6JwaM2lUJlV0MlnQn5aTRbEu0SEqHUa0A4AdiGuB1kFXRfVyg5d87+Dg4DL6m2TLAub60ilj7A1Ec4odSAc8X95sHh7+ZRPCFo6Fnp7HfU/fBng/hi10CjCnWnJjsxvDNxWw0NfV6Rv5GgP3I3jGWXumdTD/3cbEOP2ZbOZp69yniG3FQ9z1jD7bnBu9Fc2tKGC2q+uAJOQHBDRiZX1x36o7fWBs7J9ownbtO+n0/qWkvW7UPIfc37WgT6ZGR++EOJyeQDSb9UB+DZ1G6DdLDzyS+b/kBCYGsYgJbSQHuThGKRcw5xdeQf8YdNHsc6ePXrlSYMBuSIAFTGAtQo+VuALo4BX83N190NWZWbynBjhOHsmNfFWLeL6v+ynsA58zDvvAC8j5PkbOcXCMg2PZFk3q8MjI7WAG/Dp9AwP7jdGBOOQkAvlFUB+irtm16I1Zw9YBcpGTGXYmk3kQIC/Cds55l+iMI3jqhjAuaoe+am2Jw5GT3Nbz3CkE12NavmzN5+erJW7046n/CH1RO/RVa8lBLozXk9uqykkGAyRXLWlLv5jyp4RFsG5vGVzpDLnIjTWgnRy2Rr+tDKvRc7Y8AyZq10jj8DqXdnIRNtFZb+t/ZRtXcDiVnzpqx8mPcDWxgARUqx0W1QB9MeUZiNrV4qP+Ehc+BpNgATsTX8ozYKL2NtFYAHc84fG7ndxUPr+AR/iQSns7uSUufAymwDOb2+NjK27lEFocm/EE2WpyIy/Hi66MWuMKJn8RvxIcj87IM5Vh9663ziW36kR0HNenXuxmfaD8JC7tfKbrhFr7LiZCrMjrzTeGx+PmkosrkNzW94ObzwocJ7A1HokLolY+AvkTiD/q1H0cN48c5EL8Crkttsa/AXQVDmutfyku0E7jShx49XqV3MFK8IryDhYVbj7Sj2P2eBxwcXoe8T8idsKKPRcnZw1b+slFTubwUwhktrfnAt7J++jwQtLZcm3sr9LQrjRzz6cfMv9aLvgmnAGvpoaGLxM4mAEaLV7iAzQ3oU0IvD5x9ix3yF2RAAuYAOO2f7PEFWCXZ4C9Pb2UsgDeVnFSpbFK7/IWu7TPTvBqzbGdCHOJQSxiEjt6IyZmxQyEJHv6xyQsYk//moVFsN2zP6fRImjfq7/n/wFDguUQFNEwugAAAABJRU5ErkJggg==');
+  }
+
+  div.callout-important.callout-style-default .callout-title {
+    background-color: #f7dddc
+  }
+
+  div.callout-warning {
+    border-left-color: #f0ad4e !important;
+  }
+
+  div.callout-warning .callout-icon::before {
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAERlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAAAIKADAAQAAAABAAAAIAAAAACshmLzAAAETklEQVRYCeVWW2gcVRg+58yaTUnizqbipZeX4uWhBEniBaoUX1Ioze52t7sRq6APio9V9MEaoWlVsFasRq0gltaAPuxms8lu0gcviE/FFOstVbSIxgcv6SU7EZqmdc7v9+9mJtNks51NTUH84ed889/PP+cmxP+d5FIbMJmNbpREu4WUkiTtCicKny0l1pIKmBzovF2S+hIJHX8iEu3hZJ5lNZGqyRrGSIQpq15AzF28jgpeY6yk6GVdrfFqdrD6Iw+QlB8g0YS2g7dyQmXM/IDhBhT0UCiRf59lfqmmDvzRt6kByV/m4JjtzuaujMUM2c5Z2d6JdKrRb3K2q6mA+oYVz8JnDdKPmmNthzkAk/lN63sYPgevrguc72aZX/L9C6x09GYyxBgCX4NlvyGUHOKELlm5rXeR1kchuChJt4SSwyddZRXgvwMGvYo4QSlk3/zkHD8UHxwVJA6zjZZqP8v8kK8OWLnIZtLyCAJagYC4rTGW/9Pqj92N/c+LUaAj27movwbi19tk/whRCIE7Q9vyI6yvRpftAKVTdUjOW40X3h5OXsKCdmFcx0xlLJoSuQngnrJe7Kcjm4OMq9FlC7CMmScQANuNvjfP3PjGXDBaUQmbp296S5L4DrpbrHN1T87ZVEZVCzg1FF0Ft+dKrlLukI+/c9ENo+TvlTDbYFvuKPtQ9+l052rXrgKoWkDAFnvh0wTOmYn8R5f4k/jN/fZiCM1tQx9jQQ4ANhqG4hiL0qIFTGViG9DKB7GYzgubnpofgYRwO+DFjh0Zin2m4b/97EDkXkc+f6xYAPX0KK2I/7fUQuwzuwo/L3AkcjugPNixC8cHf0FyPjWlItmLxWw4Ou9YsQCr5fijMGoD/zpdRy95HRysyXA74MWOnscpO4j2y3HAVisw85hX5+AFBRSHt4ShfLFkIMXTqyKFc46xdzQM6XbAi702a7sy04J0+feReMFKp5q9esYLCqAZYw/k14E/xcLLsFElaornTuJB0svMuJINy8xkIYuL+xPAlWRceH6+HX7THJ0djLUom46zREu7tTkxwmf/FdOZ/sh6Q8qvEAiHpm4PJ4a/doJe0gH1t+aHRgCzOvBvJedEK5OFE5jpm4AGP2a8Dxe3gGJ/pAutug9Gp6he92CsSsWBaEcxGx0FHytmIpuqGkOpldqNYQK8cSoXvd+xLxXADw0kf6UkJNFtdo5MOgaLjiQOQHcn+A6h5NuL2s0qsC2LOM75PcF3yr5STuBSAcGG+meA14K/CI21HcS4LBT6tv0QAh8Dr5l93AhZzG5ZJ4VxAqdZUEl9z7WJ4aN+svMvwHHL21UKTd1mqvChH7/Za5xzXBBKrUcB0TQ+Ulgkfbi/H/YT5EptrGzsEK7tR1B7ln9BBwckYfMiuSqklSznIuoIIOM42MQO+QnduCoFCI0bpkzjCjddHPN/F+2Yu+sd9bKNpVwHhbS3LluK/0zgfwD0xYI5dXuzlQAAAABJRU5ErkJggg==');
+  }
+
+  div.callout-warning.callout-style-default .callout-title {
+    background-color: #fcefdc
+  }
+
+  div.callout-tip {
+    border-left-color: #02b875 !important;
+  }
+
+  div.callout-tip .callout-icon::before {
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAERlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAAAIKADAAQAAAABAAAAIAAAAACshmLzAAADr0lEQVRYCe1XTWgTQRj9ZjZV8a9SPIkKgj8I1bMHsUWrqYLVg4Ue6v9BwZOxSYsIerFao7UiUryIqJcqgtpimhbBXoSCVxUFe9CTiogUrUp2Pt+3aUI2u5vdNh4dmMzOzHvvezuz8xNFM0mjnbXaNu1MvFWRXkXEyE6aYOYJpdW4IXuA4r0fo8qqSMDBU0v1HJUgVieAXxzCsdE/YJTdFcVIZQNMyhruOMJKXYFoLfIfIvVIMWdsrd+Rpd86ZmyzzjJmLStqRn0v8lzkb4rVIXvnpScOJuAn2ACC65FkPzEdEy4TPWRLJ2h7z4cArXzzaOdKlbOvKKX25Wl00jSnrwVxAg3o4dRxhO13RBSdNvH0xSARv3adTXbBdTf64IWO2vH0LT+cv4GR1DJt+DUItaQogeBX/chhbTBxEiZ6gftlDNXTrvT7co4ub5A6gp9HIcHvzTa46OS5fBeP87Qm0fQkr4FsYgVQ7Qg+ZayaDg9jhg1GkWj8RG6lkeSacrrHgDaxdoBiZPg+NXV/KifMuB6//JmYH4CntVEHy/keA6x4h4CU5oFy8GzrBS18cLJMXcljAKB6INjWsRcuZBWVaS3GDrqB7rdapVIeA+isQ57Eev9eCqzqOa81CY05VLd6SamW2wA2H3SiTbnbSxmzfp7WtKZkqy4mdyAlGx7ennghYf8voqp9cLSgKdqNfa6RdRsAAkPwRuJZNbpByn+RrJi1RXTwdi8RQF6ymDwGMAtZ6TVE+4uoKh+MYkcLsT0Hk8eAienbiGdjJHZTpmNjlbFJNKDVAp2fJlYju6IreQxQ08UJDNYdoLSl6AadO+fFuCQqVMB1NJwPm69T04Wv5WhfcWyfXQB+wXRs1pt+nCknRa0LVzSA/2B+a9+zQJadb7IyyV24YAxKp2Jqs3emZTuNnKxsah+uabKbMk7CbTgJx/zIgQYErIeTKRQ9yD9wxVof5YolPHqaWo7TD6tJlh7jQnK5z2n3+fGdggIOx2kaa2YI9QWarc5Ce1ipNWMKeSG4DysFF52KBmTNMmn5HqCFkwy34rDg05gDwgH3bBi+sgFhN/e8QvRn8kbamCOhgrZ9GJhFDgfcMHzFb6BAtjKpFhzTjwv1KCVuxHvCbsSiEz4CANnj84cwHdFXAbAOJ4LTSAawGWFn5tDhLMYz6nWeU2wJfIhmIJBefcd/A5FWQWGgrWzyORZ3Q6HuV+Jf0Bj+BTX69fm1zWgK7By1YTXchFDORywnfQ7GpzOo6S+qECrsx2ifVQAAAABJRU5ErkJggg==');
+  }
+
+  div.callout-tip.callout-style-default .callout-title {
+    background-color: #ccf1e3
+  }
+
+  div.callout-caution {
+    border-left-color: #fd7e14 !important;
+  }
+
+  div.callout-caution .callout-icon::before {
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAERlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAAAIKADAAQAAAABAAAAIAAAAACshmLzAAACV0lEQVRYCdVWzWoUQRCuqp2ICBLJXgITZL1EfQDBW/bkzUMUD7klD+ATSHBEfAIfQO+iXsWDxJsHL96EHAwhgzlkg8nBg25XWb0zIb0zs9muYYWkoKeru+vn664fBqElyZNuyh167NXJ8Ut8McjbmEraKHkd7uAnAFku+VWdb3reSmRV8PKSLfZ0Gjn3a6Xlcq9YGb6tADjn+lUfTXtVmaZ1KwBIvFI11rRXlWlatwIAAv2asaa9mlB9wwygiDX26qaw1yYPzFXg2N1GgG0FMF8Oj+VIx7E/03lHx8UhvYyNZLN7BwSPgekXXLribw7w5/c8EF+DBK5idvDVYtEEwMeYefjjLAdEyQ3M9nfOkgnPTEkYU+sxMq0BxNR6jExrAI31H1rzvLEfRIdgcv1XEdj6QTQAS2wtstEALLG1yEZ3QhH6oDX7ExBSFEkFINXH98NTrme5IOaaA7kIfiu2L8A3qhH9zRbukdCqdsA98TdElyeMe5BI8Rs2xHRIsoTSSVFfCFCWGPn9XHb4cdobRIWABNf0add9jakDjQJpJ1bTXOJXnnRXHRf+dNL1ZV1MBRCXhMbaHqGI1JkKIL7+i8uffuP6wVQAzO7+qVEbF6NbS0LJureYcWXUUhH66nLR5rYmva+2tjRFtojkM2aD76HEGAD3tPtKM309FJg5j/K682ywcWJ3PASCcycH/22u+Bh7Aa0ehM2Fu4z0SAE81HF9RkB21c5bEn4Dzw+/qNOyXr3DCTQDMBOdhi4nAgiFDGCinIa2owCEChUwD8qzd03PG+qdW/4fDzjUMcE1ZpIAAAAASUVORK5CYII=');
+  }
+
+  div.callout-caution.callout-style-default .callout-title {
+    background-color: #ffe5d0
+  }
+
+  </style>
+  <style type="text/css">
+    .reveal div.sourceCode {
+      margin: 0;
+      overflow: auto;
+    }
+    .reveal div.hanging-indent {
+      margin-left: 1em;
+      text-indent: -1em;
+    }
+    .reveal .slide:not(.center) {
+      height: 100%;
+      overflow-y: auto;
+    }
+    .reveal .slide.scrollable {
+      overflow-y: auto;
+    }
+    .reveal .footnotes {
+      height: 100%;
+      overflow-y: auto;
+    }
+    .reveal .slide .absolute {
+      position: absolute;
+      display: block;
+    }
+    .reveal .footnotes ol {
+      counter-reset: ol;
+      list-style-type: none; 
+      margin-left: 0;
+    }
+    .reveal .footnotes ol li:before {
+      counter-increment: ol;
+      content: counter(ol) ". "; 
+    }
+    .reveal .footnotes ol li > p:first-child {
+      display: inline-block;
+    }
+    .reveal .slide ul,
+    .reveal .slide ol {
+      margin-bottom: 0.5em;
+    }
+    .reveal .slide ul li,
+    .reveal .slide ol li {
+      margin-top: 0.4em;
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide ul[role="tablist"] li {
+      margin-bottom: 0;
+    }
+    .reveal .slide ul li > *:first-child,
+    .reveal .slide ol li > *:first-child {
+      margin-block-start: 0;
+    }
+    .reveal .slide ul li > *:last-child,
+    .reveal .slide ol li > *:last-child {
+      margin-block-end: 0;
+    }
+    .reveal .slide .columns:nth-child(3) {
+      margin-block-start: 0.8em;
+    }
+    .reveal blockquote {
+      box-shadow: none;
+    }
+    .reveal .tippy-content>* {
+      margin-top: 0.2em;
+      margin-bottom: 0.7em;
+    }
+    .reveal .tippy-content>*:last-child {
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide > img.stretch.quarto-figure-center,
+    .reveal .slide > img.r-stretch.quarto-figure-center {
+      display: block;
+      margin-left: auto;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-left,
+    .reveal .slide > img.r-stretch.quarto-figure-left  {
+      display: block;
+      margin-left: 0;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-right,
+    .reveal .slide > img.r-stretch.quarto-figure-right  {
+      display: block;
+      margin-left: auto;
+      margin-right: 0; 
+    }
+  </style>
+  <meta name="mermaid-theme" content="forest">
+  <script src="research-papers_files/libs/quarto-diagram/mermaid.min.js"></script>
+  <script src="research-papers_files/libs/quarto-diagram/mermaid-init.js"></script>
+  <link href="research-papers_files/libs/quarto-diagram/mermaid.css" rel="stylesheet">
+</head>
+<body class="quarto-light">
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide" class="quarto-title-block center">
+  <h1 class="title">Adaptive Thresholds and Scan Statistics</h1>
+
+<div class="quarto-title-authors">
+<div class="quarto-title-author">
+<div class="quarto-title-author-name">
+Nathen Byford 
+</div>
+</div>
+</div>
+
+</section>
+<section id="contents" class="slide level2">
+<h2>Contents</h2>
+<ol type="1">
+<li>Adaptive Thresholds <span class="citation" data-cites="lambert_adaptive_2006">(<a href="#/references" role="doc-biblioref" onclick="">Lambert and Liu 2006</a>)</span>
+<ol type="i">
+<li>Motivation</li>
+<li>Methods</li>
+<li>Results</li>
+</ol></li>
+<li>Scan Statistics <span class="citation" data-cites="neil_scan_2013">(<a href="#/references" role="doc-biblioref" onclick="">Neil et al. 2013</a>)</span>
+<ol type="i">
+<li>Motivation</li>
+<li>Methods</li>
+<li>Results</li>
+</ol></li>
+<li>New Research Idea</li>
+</ol>
+</section>
+<section>
+<section id="adaptive-thresholds" class="title-slide slide level1 center">
+<h1>Adaptive Thresholds:</h1>
+<p>Monitoring Streams of Network Counts</p>
+</section>
+<section id="motivation" class="slide level2 smaller">
+<h2>Motivation</h2>
+<div class="columns">
+<div class="column" style="width:60%;">
+<ul>
+<li><p>Communications networks have many components that report statistics about their health on a regular basis. Daily, hourly, minutely, or even more frequent.</p></li>
+<li><p>Network traffic and similar fields of interest often have data that are nonstationary and full of cyclical patterns.</p></li>
+<li><p>How do we measure extreme <em>counts</em> when that data is being collected so rapidly?</p></li>
+<li><p>When setting these manually by treating each time period and region separately for each metric:</p>
+<ul>
+<li>Leads to far too many thresholds to be set by hand, and</li>
+<li>Far too many false alarms to be investigated.</li>
+</ul></li>
+</ul>
+</div><div class="column" style="width:40%;">
+<p><img data-src="photos/network-switch.jpg"></p>
+</div>
+</div>
+<blockquote>
+<p>“The goal is to detect events with each incoming count, without looking at the past raw counts or being distracted by strong cyclical patterns, trends high background variability, or stretches of missing data.”</p>
+</blockquote>
+<aside class="notes">
+<p>If we set a threshold for every time period and we set it hourly, we will have 24 in a day and then 7 days in a week. This adds up to 168 thresholds on the low end for a week, and they need to be updated as we get more data. Right?</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="previous-methods" class="slide level2">
+<h2>Previous methods</h2>
+<ul>
+<li>Batch the data into intervals that are sufficiently short in so counts can be considered identically distributed.
+<ul>
+<li>Problem is that these intervals make it difficult to detect in real time because all analysis is done after the interval.</li>
+</ul></li>
+<li>Others have assumed that daily patterns repeat so that homogeneity holds not just within short intervals, but also across days. Specifically counts at the same times (Say 9:00am to 9:05am).</li>
+</ul>
+</section>
+<section id="new-method-requirements" class="slide level2">
+<h2>New Method Requirements</h2>
+<ul>
+<li>For a model that is monitoring extremes, the model must have accurate tails. (Negative-binomial distribution)</li>
+<li>Continuously smooth and and tracks both cyclical and long-term trends.</li>
+<li>Be able to capture both extreme value spikes and persistent low-level degradation.<sup>1</sup></li>
+<li>Threshold on a severity metric <span class="math inline">\(S_t\)</span>. The severity metric could capture both the magnitude and duration of an event.</li>
+</ul>
+<aside><ol class="aside-footnotes"><li id="fn1"><p>Formulate the problem as statistical process control</p></li></ol></aside></section>
+<section id="adaptive-count-thresholding" class="slide level2 smaller">
+<h2>Adaptive Count Thresholding</h2>
+<p>Thinking in process control terms, we can standardize each count and then use an exponentially weighted moving average (EWMA) process to get an adaptive threshold.</p>
+<p><strong>Adaptive count thresholding</strong> consists of four basic steps:</p>
+<div class="def">
+<ol type="1">
+<li>Interpolate the stored grid values to obtain the estimated parameters for the reference negative binomial distribution <span class="math inline">\(F_t\)</span> in effect at time <span class="math inline">\(t\)</span></li>
+<li>Score <span class="math inline">\(X_t\)</span> by computing its <span class="math inline">\(p\)</span> value, <span class="math inline">\(p_t\)</span>, under its reference distribution <span class="math inline">\(F_t\)</span> and its normal score <span class="math inline">\(Z_t = \Phi^{-1}(p_t)\)</span>.</li>
+<li>Threshold the updated severity metric, <span class="math inline">\(S_t = (1 - w) \times S_{t-1} + wZ_t\)</span>, against a constant threshold</li>
+<li>Update stored grid values with a count <span class="math inline">\(X_t\)</span>, or with a random draw from <span class="math inline">\(F_t\)</span> if <span class="math inline">\(X_t\)</span> is missing, or with a random draw from the tail of <span class="math inline">\(F_t\)</span> if <span class="math inline">\(X_t\)</span> is an outline.</li>
+</ol>
+</div>
+</section>
+<section id="adaptive-count-thresholding-pros" class="slide level2">
+<h2>Adaptive Count Thresholding Pros</h2>
+<ul>
+<li>Each step is quick to compute</li>
+<li>The <span class="math inline">\(p\)</span> values provide a natural way to monitor the performance</li>
+<li>The negative binomial distribution will provide a roughly uniform distribution on the <span class="math inline">\(p\)</span> values</li>
+</ul>
+</section>
+<section id="the-procedure" class="slide level2 smaller">
+<h2>The Procedure</h2>
+<p>The following procedure is proposed to calculate thresholds for a time stamp <span class="math inline">\(t\)</span>:</p>
+<div class="def">
+<ol type="1">
+<li><em>Index:</em> obtain time stamp <span class="math inline">\(t\)</span> from the minute, hour, and day information.</li>
+<li><em>Compute reference parameters:</em> Compute the mean and variance of the reference distribution.</li>
+<li><em>Validate:</em> If the count is not missing, compute the continuity-corrected <span class="math inline">\(p\)</span> value.</li>
+<li><em>Threshold:</em> If the count is not missing, compute the normal <span class="math inline">\(Z\)</span> score under the reference distribution.</li>
+<li><em>Outliers and missing data:</em> If the count is missing, take a random draw from the reference distribution. If it’s an outlier or exceeds the threshold, replace with a random tail value from the reference distribution.</li>
+<li><em>Update reference distribution:</em> Update the estimated mean and variance of the reference distribution.</li>
+<li><em>Update grid values:</em> Update the grid values for each minute.</li>
+</ol>
+</div>
+</section>
+<section id="simulation-and-results" class="slide level2 smaller">
+<h2>Simulation and Results</h2>
+<div class="columns">
+<div class="column" style="width:60%;">
+<div class="def">
+<ul>
+<li><p>The data was simulated from a negative binomial distribution with mean, <span class="math display">\[\mu(t) = \left(1 + \frac{t}{10T}\right)\left(2e^{\sin(2 \pi a_t)} + .5e^{\sin(-8 \pi a_t)}\right)\]</span> and variance <span class="math inline">\(\sigma^2(t) = \max\{\mu(t), \mu(t)^2 / 4\}\)</span>.<br>
+Where <span class="math inline">\(a_t = t / (24 \times 60)\)</span>. This is shown in the plot on the right.</p></li>
+<li><p>Using the adaptive thresholding technique, the results for the simulation study are shown in the table to the right. We can see that the the probability of detection increases with the increase of the shift quantile.</p></li>
+<li><p>We see that the mean time for detection is anywhere from 3 minutes up to almost 20 minutes.</p></li>
+</ul>
+</div>
+</div><div class="column" style="width:40%;">
+<div class="cell">
+<div class="cell-output-display">
+<p><img data-src="research-papers_files/figure-revealjs/unnamed-chunk-2-1.png" width="384"></p>
+</div>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="photos/thresholds_sim.png" style="width:60.0%"></p>
+<figcaption>Table of Simulation Results</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section></section>
+<section>
+<section id="scan-statistics" class="title-slide slide level1 center">
+<h1>Scan Statistics</h1>
+<p>For the Online Detection of Locally Anomalous Subgraphs</p>
+</section>
+<section id="motivation-1" class="slide level2 smaller">
+<h2>Motivation</h2>
+<p>A common first step for an intrusion is to infect an initial machine on a network with a phishing attack. This initial machine is not often the target of the attack so the adversary will move through the network through internal communications since they are already inside the secured network. In the figure below we can see a graph of how one of these attacks would look.</p>
+<div class="cell" data-reveal="true">
+<div class="cell-output-display">
+<div>
+<div>
+<pre class="mermaid mermaid-js">flowchart LR
+a[Intruder] .-&gt;|Phishing attack| A(Machine 1)
+A --&gt; B(Machine 2)
+A ==&gt; C(Machine 4)
+A --&gt; D(Machine 3)
+C --&gt; E(Machine 5)
+C ==&gt; F[Target]
+C --&gt; G(Machine 6)
+</pre>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="types-of-intrusions" class="slide level2 smaller">
+<h2>Types of Intrusions</h2>
+<div class="columns">
+<div class="column" style="width:60%;">
+<p>There are 2 intrusion types of interest in the paper.</p>
+<div class="def">
+<ol type="1">
+<li><p><em>Traversal Behavior: <span class="math inline">\(k\)</span>-Paths</em>, seen in figure 1.</p>
+<ul>
+<li>When an intruder goes from computer to computer with thick edges to find the next target in step 3.</li>
+<li><span class="math inline">\(k\)</span>-path is a subset of nodes and edges where the size and diameter are both equal to <span class="math inline">\(k\)</span></li>
+</ul></li>
+<li><p><em>Scanning Behavior: Out Stars</em>, seen in figure 2.</p>
+<ul>
+<li>When an intruder is interested in searching around a single node to find vulerabikities in neighbering computers.</li>
+<li>This generates traffic stemming from a central node as seen in figure 2, this forms a star shape.</li>
+</ul></li>
+</ol>
+</div>
+</div><div class="column" style="width:40%;">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="photos/Traversal_attack.png" style="width:80.0%"></p>
+<figcaption>Figure 1: A traversal attack</figcaption>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="photos/out-star.png" style="width:70.0%"></p>
+<figcaption>Figure 2: out-star shape centered at node <span class="math inline">\(v\)</span></figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>This paper focuses on the traversal behavior with <span class="math inline">\(k\)</span>-paths activity, utilizing a star shaped scan statistic.</p>
+<aside class="notes">
+<p>In <span class="math inline">\(k\)</span>-path the size is the number of edges in the subset and the diameter is the shortest directed hop-distance between any two nodes. The <span class="math inline">\(k\)</span>-paths anomaly can also be called the caterpillar anomaly due to the thick path shape of it.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="the-scan-statistics" class="slide level2 smaller">
+<h2>The Scan Statistics</h2>
+<ul>
+<li>We are interested in the sets of two-dimensional windows in the time <span class="math inline">\(\times\)</span> graph product space.
+<ul>
+<li>A graph <span class="math inline">\(G = (V, E)\)</span> with node set <span class="math inline">\(V\)</span> and edge set <span class="math inline">\(E\)</span> is observed.</li>
+<li>For each edge <span class="math inline">\(e \in E\)</span>, a count process <span class="math inline">\(X_e(t)\)</span> is observed at discrete times <span class="math inline">\(t \in \{1, 2, \ldots, T\}\)</span>.</li>
+</ul></li>
+<li>We assume that for any time <span class="math inline">\(t\)</span> and edge <span class="math inline">\(e\)</span>, the edge activity <span class="math inline">\(X_e(t)\)</span> can be described with a stochastic process given by <span class="math inline">\(\boldsymbol{\theta}_e(t)\)</span>.</li>
+<li>Let <span class="math inline">\(\gamma\)</span> be the set of windows of time we are interested in, we can determine the likelihood of the stochastic process as <span class="math inline">\(L\left(\boldsymbol{\theta}(\gamma) | X(\gamma)\right)\)</span>.</li>
+<li>To test the data observed versus what we expect using the stochastic process the generalized likelihood ratio test is used,</li>
+</ul>
+<p><span class="math display">\[
+\lambda_\gamma = -2 \log\left(\frac{L(\boldsymbol{\theta}_0(\gamma)| x(\gamma))}{\sup_{\theta \in \Theta_1}L\left(\boldsymbol{\theta}(\gamma)|x(\gamma)\right)}\right)
+\]</span></p>
+<p>Large values of <span class="math inline">\(\lambda_\gamma\)</span> indicate anomalies in the observed window <span class="math inline">\(\gamma\)</span></p>
+</section>
+<section id="modling" class="slide level2">
+<h2>Modling</h2>
+<p>There are two models looked at for the stochastic process of each edge, these:</p>
+<ul>
+<li>Observed Markov Models, and</li>
+<li>Hidden Markov Models.</li>
+</ul>
+<aside class="notes">
+<ul>
+<li>OMM: This model captures the sparaticness, it ignores the distribution of the counts, and also does not reflect the underlying hidden process in many edge activities.</li>
+<li>HMM: Splits the model into two parts, with a low state and high state. The high state is given a negative binomial distribution for it’s good properties of detecting anomalies in count data.</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="simulation" class="slide level2">
+<h2>Simulation</h2>
+<ul>
+<li>In the simulation both star and path shapes were used to scan the data to detect anomalous edge activity.</li>
+<li>The simulated data included star, path, and caterpillar anomalies.</li>
+</ul>
+</section>
+<section id="simulation-results" class="slide level2 smaller">
+<h2>Simulation Results</h2>
+<p>In the table below, there are detection statistics for the simulation study.</p>
+<div class="def">
+<table>
+<thead>
+<tr class="header">
+<th>Anomaly type</th>
+<th>Scan type</th>
+<th style="text-align: right;">AEF<sup>1</sup></th>
+<th style="text-align: right;">PAD<sup>2</sup></th>
+<th style="text-align: right;">GS<sup>3</sup></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Star</td>
+<td>Path</td>
+<td style="text-align: right;">0.18(0.02)</td>
+<td style="text-align: right;">0.23(0.03)</td>
+<td style="text-align: right;">448.5(106.49)</td>
+</tr>
+<tr class="even">
+<td>Star</td>
+<td>Star</td>
+<td style="text-align: right;">1.00(0.00)</td>
+<td style="text-align: right;">1.00(0.00)</td>
+<td style="text-align: right;">43.02(0.02)</td>
+</tr>
+<tr class="odd">
+<td>CatA</td>
+<td>Path</td>
+<td style="text-align: right;">0.01(0.01)</td>
+<td style="text-align: right;">0.79(0.01)</td>
+<td style="text-align: right;">3431.71(279.11)</td>
+</tr>
+<tr class="even">
+<td>CatA</td>
+<td>Star</td>
+<td style="text-align: right;">0.02(0.00)</td>
+<td style="text-align: right;">0.19(0.01)</td>
+<td style="text-align: right;">62.42(4.06)</td>
+</tr>
+<tr class="odd">
+<td>CatB</td>
+<td>Path</td>
+<td style="text-align: right;">0.24(0.01)</td>
+<td style="text-align: right;">0.92(0.01)</td>
+<td style="text-align: right;">887.04(106.96)</td>
+</tr>
+<tr class="even">
+<td>CatB</td>
+<td>Star</td>
+<td style="text-align: right;">1.00(0.00)</td>
+<td style="text-align: right;">1.00(0.00)</td>
+<td style="text-align: right;">134.02(0.02)</td>
+</tr>
+</tbody>
+</table>
+</div>
+<aside><ol class="aside-footnotes"><li id="fn2"><p>AEF is the average number of anomalous edges per number of detected edges.</p></li><li id="fn3"><p>PAD is the average percentage of the truly anomalous edges that were detected.</p></li><li id="fn4"><p>GS is the average size of the detected subgraph, which may contain many false edges.</p></li></ol></aside></section></section>
+<section>
+<section id="potential-research" class="title-slide slide level1 center">
+<h1>Potential Research</h1>
+
+</section>
+<section id="dynamic-thresholds-for-event-stream-counts" class="slide level2">
+<h2>Dynamic Thresholds for event stream counts</h2>
+<p>Take inspiration from ideas used in <em>dynamic memory allocation</em> in computer systems (machine learning algorithms) and apply these methods to help predict thresholds for a time series steaming data.<br>
+<ins>This method would involve:</ins></p>
+<ul>
+<li>Using the past time series and multivariate data and a machine/statistical learning algorithm to get a prediction of the distribution of the next values.</li>
+<li>Using these prediction we could calculate a severity metric <span class="math inline">\(S_t\)</span> from adaptive thresholds<span class="citation" data-cites="lambert_adaptive_2006">(<a href="#/references" role="doc-biblioref" onclick="">Lambert and Liu 2006</a>)</span> and statistical process control to determine a future threshold for anomaly detection.</li>
+</ul>
+</section>
+<section id="dynamic-thresholds-cont." class="slide level2">
+<h2>Dynamic thresholds (cont.)</h2>
+<ul>
+<li>Then continuously update the model as the data streams so that it continues to update the threshold based on the data.</li>
+<li>This method could be used for anomaly detection for any streaming data to dynamically assign the threshold used for future values.</li>
+<li>This model could be combined with adversarial machine learning methods to produce a robust machine learning algorithm that is not effected by the outliers.<span class="citation" data-cites="Insua_2023">(<a href="#/references" role="doc-biblioref" onclick="">Rios Insua et al. 2023</a>)</span></li>
+</ul>
+</section></section>
+<section>
+<section id="questions-or-comments" class="title-slide slide level1 center">
+<h1>Questions or comments?</h1>
+
+</section>
+<section id="references" class="slide level2 smaller scrollable">
+<h2>References</h2>
+
+<img src="_extensions/nathenbyford/baylor_theme/logo.png" class="slide-logo r-stretch"><div class="footer footer-default">
+<p>Nathen Byford</p>
+</div>
+<div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<div id="ref-lambert_adaptive_2006" class="csl-entry" role="listitem">
+Lambert, Diane, and Chuanhai Liu. 2006. <span>“Adaptive <span>Thresholds</span>: <span>Monitoring</span> <span>Streams</span> of <span>Network</span> <span>Counts</span>.”</span> <em>Journal of the American Statistical Association</em> 101 (473): 78–88. <a href="https://doi.org/10.1198/016214505000000943">https://doi.org/10.1198/016214505000000943</a>.
+</div>
+<div id="ref-neil_scan_2013" class="csl-entry" role="listitem">
+Neil, Joshua, Curtis Hash, Alexander Brugh, Mike Fisk, and Curtis B. Storlie. 2013. <span>“Scan <span>Statistics</span> for the <span>Online</span> <span>Detection</span> of <span>Locally</span> <span>Anomalous</span> <span>Subgraphs</span>.”</span> <em>Technometrics</em> 55 (4): 403–14. <a href="https://doi.org/10.1080/00401706.2013.822830">https://doi.org/10.1080/00401706.2013.822830</a>.
+</div>
+<div id="ref-Insua_2023" class="csl-entry" role="listitem">
+Rios Insua, David, Roi Naveiro, Víctor Gallego, and Jason Poulos. 2023. <span>“Adversarial Machine Learning: Bayesian Perspectives.”</span> <em>Journal of the American Statistical Association</em> 118 (543): 2195–2206. <a href="https://doi.org/10.1080/01621459.2023.2183129">https://doi.org/10.1080/01621459.2023.2183129</a>.
+</div>
+</div>
+</section></section>
+
+    </div>
+  </div>
+
+  <script>window.backupDefine = window.define; window.define = undefined;</script>
+  <script src="research-papers_files/libs/revealjs/dist/reveal.js"></script>
+  <!-- reveal.js plugins -->
+  <script src="research-papers_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
+  <script src="research-papers_files/libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
+  <script src="research-papers_files/libs/revealjs/plugin/reveal-menu/menu.js"></script>
+  <script src="research-papers_files/libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
+  <script src="research-papers_files/libs/revealjs/plugin/quarto-support/support.js"></script>
+  
+
+  <script src="research-papers_files/libs/revealjs/plugin/notes/notes.js"></script>
+  <script src="research-papers_files/libs/revealjs/plugin/search/search.js"></script>
+  <script src="research-papers_files/libs/revealjs/plugin/zoom/zoom.js"></script>
+  <script src="research-papers_files/libs/revealjs/plugin/math/math.js"></script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+'controlsAuto': true,
+'previewLinksAuto': false,
+'smaller': false,
+'pdfSeparateFragments': false,
+'autoAnimateEasing': "ease",
+'autoAnimateDuration': 1,
+'autoAnimateUnmatched': true,
+'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
+'smaller': false,
+ 
+        // Display controls in the bottom right corner
+        controls: false,
+
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: false,
+
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'edges',
+
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+
+        // Display a presentation progress bar
+        progress: true,
+
+        // Display the page number of the current slide
+        slideNumber: 'c/t',
+
+        // 'all', 'print', or 'speaker'
+        showSlideNumber: 'all',
+
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+
+        // Start with 1 for the hash rather than 0
+        hashOneBasedIndex: false,
+
+        // Flags if we should monitor the hash and change slides accordingly
+        respondToHashChanges: true,
+
+        // Push each slide change to the browser history
+        history: true,
+
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+
+        // Enable the slide overview mode
+        overview: true,
+
+        // Disables the default reveal.js slide layout (scaling and centering)
+        // so that you can use custom CSS layout
+        disableLayout: false,
+
+        // Vertical centering of slides
+        center: false,
+
+        // Enables touch navigation on devices with touch input
+        touch: true,
+
+        // Loop the presentation
+        loop: false,
+
+        // Change the presentation direction to be RTL
+        rtl: false,
+
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'linear',
+
+        // Randomizes the order of slides each time the presentation loads
+        shuffle: false,
+
+        // Turns fragments on and off globally
+        fragments: true,
+
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: false,
+
+        // Flags if the presentation is running in an embedded mode,
+        // i.e. contained within a limited portion of the screen
+        embedded: false,
+
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+
+        // Flags if it should be possible to pause the presentation (blackout)
+        pause: true,
+
+        // Flags if speaker notes should be visible to all viewers
+        showNotes: false,
+
+        // Global override for autoplaying embedded media (null/true/false)
+        autoPlayMedia: null,
+
+        // Global override for preloading lazy-loaded iframes (null/true/false)
+        preloadIframes: null,
+
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+
+        // Enable slide navigation via mouse wheel
+        mouseWheel: false,
+
+        // The display mode that will be used to show slides
+        display: 'block',
+
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+
+        // Opens links in an iframe preview overlay
+        previewLinks: false,
+
+        // Transition style (none/fade/slide/convex/concave/zoom)
+        transition: 'none',
+
+        // Transition speed (default/fast/slow)
+        transitionSpeed: 'default',
+
+        // Transition style for full page slide backgrounds
+        // (none/fade/slide/convex/concave/zoom)
+        backgroundTransition: 'none',
+
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1050,
+
+        height: 700,
+
+        // Factor of the display size that should remain empty around the content
+        margin: 0.1,
+
+        math: {
+          mathjax: 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js',
+          config: 'TeX-AMS_HTML-full',
+          tex2jax: {
+            inlineMath: [['\\(','\\)']],
+            displayMath: [['\\[','\\]']],
+            balanceBraces: true,
+            processEscapes: false,
+            processRefs: true,
+            processEnvironments: true,
+            preview: 'TeX',
+            skipTags: ['script','noscript','style','textarea','pre','code'],
+            ignoreClass: 'tex2jax_ignore',
+            processClass: 'tex2jax_process'
+          },
+        },
+
+        // reveal.js plugins
+        plugins: [QuartoLineHighlight, PdfExport, RevealMenu, QuartoSupport,
+
+          RevealMath,
+          RevealNotes,
+          RevealSearch,
+          RevealZoom
+        ]
+      });
+    </script>
+    
+    <script>
+      // htmlwidgets need to know to resize themselves when slides are shown/hidden.
+      // Fire the "slideenter" event (handled by htmlwidgets.js) when the current
+      // slide changes (different for each slide format).
+      (function () {
+        // dispatch for htmlwidgets
+        function fireSlideEnter() {
+          const event = window.document.createEvent("Event");
+          event.initEvent("slideenter", true, true);
+          window.document.dispatchEvent(event);
+        }
+
+        function fireSlideChanged(previousSlide, currentSlide) {
+          fireSlideEnter();
+
+          // dispatch for shiny
+          if (window.jQuery) {
+            if (previousSlide) {
+              window.jQuery(previousSlide).trigger("hidden");
+            }
+            if (currentSlide) {
+              window.jQuery(currentSlide).trigger("shown");
+            }
+          }
+        }
+
+        // hookup for slidy
+        if (window.w3c_slidy) {
+          window.w3c_slidy.add_observer(function (slide_num) {
+            // slide_num starts at position 1
+            fireSlideChanged(null, w3c_slidy.slides[slide_num - 1]);
+          });
+        }
+
+      })();
+    </script>
+
+    <script id="quarto-html-after-body" type="application/javascript">
+    window.document.addEventListener("DOMContentLoaded", function (event) {
+      const toggleBodyColorMode = (bsSheetEl) => {
+        const mode = bsSheetEl.getAttribute("data-mode");
+        const bodyEl = window.document.querySelector("body");
+        if (mode === "dark") {
+          bodyEl.classList.add("quarto-dark");
+          bodyEl.classList.remove("quarto-light");
+        } else {
+          bodyEl.classList.add("quarto-light");
+          bodyEl.classList.remove("quarto-dark");
+        }
+      }
+      const toggleBodyColorPrimary = () => {
+        const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+        if (bsSheetEl) {
+          toggleBodyColorMode(bsSheetEl);
+        }
+      }
+      toggleBodyColorPrimary();  
+      const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")
+      tabsets.forEach(function(tabset) {
+        const tabby = new Tabby('#' + tabset.id);
+      });
+      const isCodeAnnotation = (el) => {
+        for (const clz of el.classList) {
+          if (clz.startsWith('code-annotation-')) {                     
+            return true;
+          }
+        }
+        return false;
+      }
+      const clipboard = new window.ClipboardJS('.code-copy-button', {
+        text: function(trigger) {
+          const codeEl = trigger.previousElementSibling.cloneNode(true);
+          for (const childEl of codeEl.children) {
+            if (isCodeAnnotation(childEl)) {
+              childEl.remove();
+            }
+          }
+          return codeEl.innerText;
+        }
+      });
+      clipboard.on('success', function(e) {
+        // button target
+        const button = e.trigger;
+        // don't keep focus
+        button.blur();
+        // flash "checked"
+        button.classList.add('code-copy-button-checked');
+        var currentTitle = button.getAttribute("title");
+        button.setAttribute("title", "Copied!");
+        let tooltip;
+        if (window.bootstrap) {
+          button.setAttribute("data-bs-toggle", "tooltip");
+          button.setAttribute("data-bs-placement", "left");
+          button.setAttribute("data-bs-title", "Copied!");
+          tooltip = new bootstrap.Tooltip(button, 
+            { trigger: "manual", 
+              customClass: "code-copy-button-tooltip",
+              offset: [0, -8]});
+          tooltip.show();    
+        }
+        setTimeout(function() {
+          if (tooltip) {
+            tooltip.hide();
+            button.removeAttribute("data-bs-title");
+            button.removeAttribute("data-bs-toggle");
+            button.removeAttribute("data-bs-placement");
+          }
+          button.setAttribute("title", currentTitle);
+          button.classList.remove('code-copy-button-checked');
+        }, 1000);
+        // clear code selection
+        e.clearSelection();
+      });
+      function tippyHover(el, contentFn) {
+        const config = {
+          allowHTML: true,
+          content: contentFn,
+          maxWidth: 500,
+          delay: 100,
+          arrow: false,
+          appendTo: function(el) {
+              return el.closest('section.slide') || el.parentElement;
+          },
+          interactive: true,
+          interactiveBorder: 10,
+          theme: 'light-border',
+          placement: 'bottom-start'
+        };
+          config['offset'] = [0,0];
+          config['maxWidth'] = 700;
+        window.tippy(el, config); 
+      }
+      const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+      for (var i=0; i<noterefs.length; i++) {
+        const ref = noterefs[i];
+        tippyHover(ref, function() {
+          // use id or data attribute instead here
+          let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+          try { href = new URL(href).hash; } catch {}
+          const id = href.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          return note.innerHTML;
+        });
+      }
+      const findCites = (el) => {
+        const parentEl = el.parentElement;
+        if (parentEl) {
+          const cites = parentEl.dataset.cites;
+          if (cites) {
+            return {
+              el,
+              cites: cites.split(' ')
+            };
+          } else {
+            return findCites(el.parentElement)
+          }
+        } else {
+          return undefined;
+        }
+      };
+      var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+      for (var i=0; i<bibliorefs.length; i++) {
+        const ref = bibliorefs[i];
+        const citeInfo = findCites(ref);
+        if (citeInfo) {
+          tippyHover(citeInfo.el, function() {
+            var popup = window.document.createElement('div');
+            citeInfo.cites.forEach(function(cite) {
+              var citeDiv = window.document.createElement('div');
+              citeDiv.classList.add('hanging-indent');
+              citeDiv.classList.add('csl-entry');
+              var biblioDiv = window.document.getElementById('ref-' + cite);
+              if (biblioDiv) {
+                citeDiv.innerHTML = biblioDiv.innerHTML;
+              }
+              popup.appendChild(citeDiv);
+            });
+            return popup.innerHTML;
+          });
+        }
+      }
+    });
+    </script>
+    
+
+</body></html>
